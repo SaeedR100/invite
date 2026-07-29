@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>یه سوال مهم 💌</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+
+  :root{
+    --blush:#ffe1ec;
+    --cream:#fff6f9;
+    --rose:#ff6f9c;
+    --rose-deep:#e0457a;
+    --lav:#b98cf0;
+    --gold:#ffce4b;
+    --ink:#5a2d43;
+    --muted:#c98aa6;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Vazirmatn', sans-serif;
+    background:radial-gradient(circle at 20% 15%, #fff0f5 0%, var(--blush) 45%, #ffd3e6 100%);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  .floaties{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+  .floaties span{
+    position:absolute;bottom:-10%;font-size:22px;opacity:.55;
+    animation:floatUp linear infinite;
+    filter:drop-shadow(0 2px 4px rgba(224,69,122,.15));
+  }
+  @keyframes floatUp{
+    0%{transform:translateY(0) rotate(0deg);opacity:0;}
+    10%{opacity:.6;}
+    90%{opacity:.5;}
+    100%{transform:translateY(-115vh) rotate(25deg);opacity:0;}
+  }
+
+  .screen{
+    position:relative;z-index:1;
+    display:none;
+    min-height:100vh;
+    align-items:center;justify-content:center;
+    padding:32px 18px 90px;
+    animation:fadeIn .5s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{
+    width:100%;max-width:420px;
+    background:rgba(255,255,255,.75);
+    backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.7);
+    border-radius:28px;
+    padding:36px 26px;
+    text-align:center;
+    box-shadow:0 20px 45px -18px rgba(224,69,122,.35);
+  }
+
+  .eyebrow{
+    margin:0 0 6px;
+    font-size:13px;letter-spacing:.5px;
+    color:var(--rose-deep);font-weight:600;
+    opacity:.85;
+  }
+  .question{
+    margin:0 0 22px;
+    font-size:26px;font-weight:800;
+    line-height:1.6;color:var(--ink);
+  }
+  .hint{
+    margin:-12px 0 22px;font-size:14px;color:var(--muted);font-weight:500;
+  }
+
+  .btn-row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .btn{
+    border:none;cursor:pointer;font-family:inherit;font-weight:700;
+    border-radius:999px;transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  }
+  .btn-yes{
+    background:linear-gradient(135deg,var(--rose) 0%, var(--rose-deep) 100%);
+    color:#fff;font-size:18px;padding:16px 34px;
+    box-shadow:0 10px 24px -8px rgba(224,69,122,.6);
+  }
+  .btn-yes:hover{transform:translateY(-2px) scale(1.03);}
+  .btn-no{
+    background:#f4e3ea;color:var(--muted);
+    font-size:12px;padding:8px 16px;
+    opacity:.7;
+  }
+  .btn-no:hover{opacity:.85;}
+
+  .taunt{
+    min-height:22px;margin-top:18px;font-size:14px;font-weight:600;
+    color:var(--rose-deep);opacity:0;transition:opacity .35s ease;
+  }
+  .taunt.show{opacity:1;}
+
+  .field{margin:0 0 20px;text-align:right;}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--rose-deep);margin-bottom:8px;}
+  .picker-btn{
+    width:100%;padding:14px 16px;border-radius:16px;border:2px solid #ffd0e0;
+    background:#fff;color:var(--ink);font-family:inherit;font-size:15px;font-weight:600;
+    cursor:pointer;text-align:center;transition:border-color .2s ease;
+  }
+  .picker-btn:hover{border-color:var(--rose);}
+  .picker-btn.filled{border-color:var(--rose);color:var(--rose-deep);}
+
+  .time-wrap{display:flex;align-items:center;justify-content:center;gap:8px;}
+  .time-wrap select{
+    flex:1;padding:14px 8px;border-radius:16px;border:2px solid #ffd0e0;
+    background:#fff;
+    color:var(--ink);font-family:inherit;font-size:16px;font-weight:600;text-align:center;
+    cursor:pointer;
+  }
+  .time-wrap select:focus{outline:none;border-color:var(--rose);}
+  .time-colon{font-size:20px;font-weight:800;color:var(--rose-deep);}
+
+  .reset-btn{
+    display:inline-block;margin-top:8px;background:none;border:none;color:var(--muted);
+    font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;
+  }
+  .reset-btn:hover{color:var(--rose-deep);}
+
+  .btn-next{width:100%;margin-top:6px;font-size:16px;padding:15px;}
+  .btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+  .calendar-overlay{
+    position:fixed;inset:0;background:rgba(90,45,67,.45);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:16px;
+  }
+  .calendar-overlay.active{display:flex;}
+  .calendar{
+    background:#fff;border-radius:22px;padding:20px;width:100%;max-width:340px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.4);
+  }
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .cal-header button{
+    background:var(--blush);border:none;width:34px;height:34px;border-radius:50%;
+    font-size:18px;color:var(--rose-deep);cursor:pointer;font-family:inherit;
+  }
+  .cal-header span{font-weight:700;font-size:15px;color:var(--ink);}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;}
+  .cal-weekdays span{font-size:11px;color:var(--muted);text-align:center;font-weight:700;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+  .cal-grid button{
+    height:38px;border:none;background:#fdeef3;border-radius:10px;
+    font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;
+  }
+  .cal-grid button:hover{background:var(--blush);}
+  .cal-grid button.today{outline:2px solid var(--lav);}
+  .cal-grid button.selected{background:var(--rose);color:#fff;}
+  .cal-grid .empty{background:transparent;cursor:default;height:38px;}
+  .close-cal{
+    width:100%;margin-top:16px;background:none;border:none;color:var(--muted);
+    font-family:inherit;font-size:13px;cursor:pointer;font-weight:600;text-decoration:underline;
+  }
+
+  .place-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+  .place{
+    height:120px;border:none;border-radius:20px;cursor:pointer;font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    background:#fff;border:2px solid #ffd0e0;transition:transform .18s ease, background .18s ease;
+  }
+  .place span{font-size:14px;font-weight:700;color:var(--ink);}
+  .place{font-size:34px;}
+  .place:hover{transform:translateY(-3px);background:var(--blush);border-color:var(--rose);}
+
+  #screen-4{overflow:hidden;}
+  .win-card{position:relative;z-index:2;}
+  .win-title{font-size:26px;margin:0 0 20px;color:var(--rose-deep);}
+  .win-badge{
+    display:inline-block;background:linear-gradient(135deg,var(--gold),#ffb703);
+    color:#5a3b00;font-weight:800;font-size:14px;padding:10px 20px;border-radius:999px;
+    box-shadow:0 8px 18px -6px rgba(255,183,3,.6);margin-bottom:22px;
+  }
+  .final-text{font-size:18px;font-weight:700;line-height:2;color:var(--ink);white-space:pre-line;}
+
+  .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+  .confetti span{
+    position:absolute;top:-8%;font-size:20px;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    0%{transform:translateY(0) rotate(0deg);opacity:1;}
+    100%{transform:translateY(115vh) rotate(180deg);opacity:.9;}
+  }
+  .balloon{
+    position:absolute;bottom:-15%;font-size:30px;
+    animation:rise linear infinite;
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0);}
+    50%{transform:translateY(-60vh) translateX(15px);}
+    100%{transform:translateY(-120vh) translateX(-10px);}
+  }
+
+  .site-footer{
+    position:fixed;bottom:0;left:0;right:0;text-align:center;
+    font-size:11px;color:var(--muted);padding:10px 12px;
+    background:linear-gradient(to top, rgba(255,246,249,.9), transparent);
+    z-index:5;
+  }
+
+  @media (max-width:380px){
+    .question{font-size:22px;}
+    .card{padding:28px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="floaties" id="floaties"></div>
+
+<div class="screen active" id="screen-1">
+  <div class="card">
+    <p class="eyebrow">یه سوال کوچولو...</p>
+    <h1 class="question">با من میای سر قرار؟ 🌸</h1>
+    <div class="btn-row">
+      <button class="btn btn-no" id="btnNo" type="button">نه</button>
+      <button class="btn btn-yes" id="btnYes" type="button">بله</button>
+    </div>
+    <p class="taunt" id="taunt"></p>
+  </div>
+</div>
+
+<div class="screen" id="screen-2">
+  <div class="card">
+    <p class="eyebrow">مرحله بعد 💗</p>
+    <h1 class="question">کی وقت داری؟</h1>
+    <p class="hint">یه تاریخ و ساعت خوب انتخاب کن</p>
+
+    <div class="field">
+      <label>تاریخ</label>
+      <button class="picker-btn" id="dateBtn" type="button">انتخاب تاریخ 📅</button>
+      <button class="reset-btn" id="dateReset" type="button">پاک کردن</button>
+    </div>
+
+    <div class="field">
+      <label>ساعت</label>
+      <div class="time-wrap">
+        <select id="hourSel"></select>
+        <span class="time-colon">:</span>
+        <select id="minSel"></select>
+      </div>
+      <button class="reset-btn" id="timeReset" type="button">پاک کردن</button>
+    </div>
+
+    <button class="btn btn-yes btn-next" id="toScreen3" type="button" disabled>بعدی</button>
+  </div>
+
+  <div class="calendar-overlay" id="calOverlay">
+    <div class="calendar">
+      <div class="cal-header">
+        <button id="calPrev" type="button">‹</button>
+        <span id="calTitle"></span>
+        <button id="calNext" type="button">›</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <button class="close-cal" id="calClose" type="button">بستن</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-3">
+  <div class="card">
+    <p class="eyebrow">یکی دیگه...</p>
+    <h1 class="question">کجا بریم؟</h1>
+    <div class="place-grid">
+      <button class="place" data-place="سینما" type="button">🎬<span>سینما</span></button>
+      <button class="place" data-place="کافه" type="button">☕<span>کافه</span></button>
+      <button class="place" data-place="رستوران" type="button">🍽️<span>رستوران</span></button>
+      <button class="place" data-place="پارک" type="button">🌳<span>پارک</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-4">
+  <div class="confetti" id="confetti"></div>
+  <div class="card win-card">
+    <h1 class="win-title">🎉📯 قبول کردی! 📯🎉</h1>
+    <div class="win-badge">خوشحالم نگفتی نه 💕</div>
+    <p class="final-text" id="finalText"></p>
+  </div>
+</div>
+
+<footer class="site-footer">برای اینکه ازت درخواست کنم یه وبسایت طراحی کردم 😎 که چیز مهمی نبود</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  function toPersianDigits(str){
+    var fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return String(str).replace(/[0-9]/g, function(d){ return fa[d]; });
+  }
+  function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+  function div(a,b){ return Math.floor(a/b); }
+
+  function toJalali(gy, gm, gd){
+    var g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
+    var gy2 = (gm > 2) ? (gy + 1) : gy;
+    var days = 355666 + (365*gy) + div((gy2+3),4) - div((gy2+99),100) + div((gy2+399),400) + gd + g_d_m[gm-1];
+    var jy = -1595 + (33 * div(days,12053));
+    days = days % 12053;
+    jy += 4 * div(days,1461);
+    days = days % 1461;
+    if (days > 365){
+      jy += div((days-1),365);
+      days = (days-1) % 365;
+    }
+    var jm, jd;
+    if (days < 186){
+      jm = 1 + div(days,31);
+      jd = 1 + (days % 31);
+    } else {
+      jm = 7 + div((days-186),30);
+      jd = 1 + ((days-186) % 30);
+    }
+    return [jy, jm, jd];
+  }
+
+  function toGregorian(jy, jm, jd){
+    jy += 1595;
+    var days = -355668 + (365*jy) + (div(jy,33)*8) + div(((jy%33)+3),4) + jd + ((jm < 7) ? (jm-1)*31 : ((jm-7)*30)+186);
+    var gy = 400 * div(days,146097);
+    days = days % 146097;
+    if (days > 36524){
+      days = days - 1;
+      gy += 100 * div(days,36524);
+      days = days % 36524;
+      if (days >= 365) days++;
+    }
+    gy += 4 * div(days,1461);
+    days = days % 1461;
+    if (days > 365){
+      gy += div((days-1),365);
+      days = (days-1) % 365;
+    }
+    var gd = days + 1;
+    var isG_leap = (gy%4===0 && gy%100!==0) || (gy%400===0);
+    var sal_a = [0,31, isG_leap?29:28, 31,30,31,30,31,31,30,31,30,31];
+    var gm;
+    for (gm = 0; gm < 13; gm++){
+      var v = sal_a[gm];
+      if (gd <= v) break;
+      gd -= v;
+    }
+    return [gy, gm, gd];
+  }
+
+  function isLeapJalali(jy){
+    var r = ((jy % 33) + 33) % 33;
+    var leaps = [1,5,9,13,17,22,26,30];
+    for (var i=0;i<leaps.length;i++){ if (leaps[i]===r) return true; }
+    return false;
+  }
+  function jalaliMonthLength(jy, jm){
+    if (jm <= 6) return 31;
+    if (jm <= 11) return 30;
+    return isLeapJalali(jy) ? 30 : 29;
+  }
+  function jalaliFirstWeekdayForDay(jy,jm,jd){
+    var g = toGregorian(jy,jm,jd);
+    var d = new Date(g[0], g[1]-1, g[2]);
+    return (d.getDay() + 1) % 7;
+  }
+
+  var MONTH_NAMES = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  var WEEKDAY_NAMES = ['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+
+  function initFloaties(){
+    var heartEmojis = ['💗','💕','✨','💖','🌸'];
+    var floatiesEl = document.getElementById('floaties');
+    if (!floatiesEl) return;
+    for (var i=0;i<10;i++){
+      var s = document.createElement('span');
+      s.textContent = heartEmojis[i % heartEmojis.length];
+      s.style.left = (Math.random()*100)+'%';
+      s.style.animationDuration = (10+Math.random()*10)+'s';
+      s.style.animationDelay = (Math.random()*10)+'s';
+      s.style.fontSize = (16+Math.random()*14)+'px';
+      floatiesEl.appendChild(s);
+    }
+  }
+
+  var screens = {};
+  function goTo(n){
+    for (var k in screens){
+      if (screens.hasOwnProperty(k)) screens[k].classList.remove('active');
+    }
+    screens[n].classList.add('active');
+  }
+
+  var noClicks = 0;
+  var noMessages = ['فکراتو بکن... 🤔','دکمه‌ی بله داره صدات می‌زنه 👉💖','خب بسه دیگه... فقط بله رو بزن 😌'];
+
+  function showTaunt(taunt, text){
+    taunt.textContent = text;
+    taunt.classList.remove('show');
+    void taunt.offsetWidth;
+    taunt.classList.add('show');
+  }
+
+  var selectedJY=null, selectedJM=null, selectedJD=null;
+  var selectedPlace = null;
+  var viewJY, viewJM, todayJY, todayJM, todayJD;
+
+  function checkReady(toScreen3, hourSel, minSel){
+    toScreen3.disabled = !(selectedJY!==null && hourSel.value!=='' && minSel.value!=='');
+  }
+
+  function renderCalendar(calTitle, calGrid, dateBtn, calOverlay, toScreen3, hourSel, minSel){
+    calTitle.textContent = MONTH_NAMES[viewJM-1] + ' ' + toPersianDigits(viewJY);
+    calGrid.innerHTML = '';
+    var firstWeekday = jalaliFirstWeekdayForDay(viewJY, viewJM, 1);
+    var monthLen = jalaliMonthLength(viewJY, viewJM);
+    var i, d;
+    for (i=0;i<firstWeekday;i++){
+      var e = document.createElement('div');
+      e.className = 'empty';
+      calGrid.appendChild(e);
+    }
+    for (d=1; d<=monthLen; d++){
+      (function(dayNum){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = toPersianDigits(dayNum);
+        if (viewJY===todayJY && viewJM===todayJM && dayNum===todayJD) b.className += ' today';
+        if (selectedJY===viewJY && selectedJM===viewJM && selectedJD===dayNum) b.className += ' selected';
+        b.addEventListener('click', function(){
+          selectedJY=viewJY; selectedJM=viewJM; selectedJD=dayNum;
+          var wd = WEEKDAY_NAMES[jalaliFirstWeekdayForDay(viewJY,viewJM,dayNum)];
+          dateBtn.textContent = wd + ' ' + toPersianDigits(dayNum) + ' ' + MONTH_NAMES[viewJM-1] + ' ' + toPersianDigits(viewJY);
+          dateBtn.classList.add('filled');
+          calOverlay.classList.remove('active');
+          checkReady(toScreen3, hourSel, minSel);
+        });
+        calGrid.appendChild(b);
+      })(d);
+    }
+  }
+
+  function buildFinal(hourSel, minSel){
+    var wd = WEEKDAY_NAMES[jalaliFirstWeekdayForDay(selectedJY, selectedJM, selectedJD)];
+    var dateStr = wd + ' ' + toPersianDigits(selectedJD) + ' ' + MONTH_NAMES[selectedJM-1];
+    var timeStr = toPersianDigits(pad2(hourSel.value)) + ':' + toPersianDigits(pad2(minSel.value));
+    var finalText = document.getElementById('finalText');
+    finalText.textContent = 'پس ' + dateStr + ' ساعت ' + timeStr + '\nمیام دنبالت برای ' + selectedPlace;
+  }
+
+  function launchCelebration(){
+    var confettiEl = document.getElementById('confetti');
+    confettiEl.innerHTML = '';
+    var confettiEmojis = ['🎊','🎉','✨','💖','🎈'];
+    var i;
+    for (i=0;i<24;i++){
+      var s = document.createElement('span');
+      s.textContent = confettiEmojis[i % confettiEmojis.length];
+      s.style.left = (Math.random()*100)+'%';
+      s.style.animationDuration = (3+Math.random()*3)+'s';
+      s.style.animationDelay = (Math.random()*2)+'s';
+      s.style.fontSize = (14+Math.random()*14)+'px';
+      confettiEl.appendChild(s);
+    }
+    for (i=0;i<8;i++){
+      var b = document.createElement('span');
+      b.className = 'balloon';
+      b.textContent = '🎈';
+      b.style.left = (Math.random()*90)+'%';
+      b.style.animationDuration = (7+Math.random()*5)+'s';
+      b.style.animationDelay = (Math.random()*3)+'s';
+      confettiEl.appendChild(b);
+    }
+  }
+
+  function init(){
+    screens = {
+      1: document.getElementById('screen-1'),
+      2: document.getElementById('screen-2'),
+      3: document.getElementById('screen-3'),
+      4: document.getElementById('screen-4')
+    };
+
+    initFloaties();
+
+    var btnYes = document.getElementById('btnYes');
+    var btnNo = document.getElementById('btnNo');
+    var taunt = document.getElementById('taunt');
+
+    btnNo.addEventListener('click', function(){
+      var idx = noClicks < noMessages.length ? noClicks : noMessages.length-1;
+      showTaunt(taunt, noMessages[idx]);
+      noClicks++;
+      var scale = 1 + noClicks*0.08;
+      if (scale > 1.35) scale = 1.35;
+      btnYes.style.transform = 'scale(' + scale + ')';
+    });
+
+    btnYes.addEventListener('click', function(){
+      showTaunt(taunt, 'آره همینجاست... منتظرته 💗');
+      btnYes.disabled = true;
+      setTimeout(function(){
+        btnYes.disabled = false;
+        btnYes.style.transform = '';
+        goTo(2);
+      }, 1100);
+    });
+
+    var dateBtn = document.getElementById('dateBtn');
+    var dateReset = document.getElementById('dateReset');
+    var hourSel = document.getElementById('hourSel');
+    var minSel = document.getElementById('minSel');
+    var timeReset = document.getElementById('timeReset');
+    var toScreen3 = document.getElementById('toScreen3');
+
+    var optHour = document.createElement('option');
+    optHour.value=''; optHour.textContent='ساعت'; optHour.disabled=true; optHour.selected=true;
+    hourSel.appendChild(optHour);
+    var h;
+    for (h=0; h<24; h++){
+      var oh = document.createElement('option');
+      oh.value = h;
+      oh.textContent = toPersianDigits(pad2(h));
+      hourSel.appendChild(oh);
+    }
+    var optMin = document.createElement('option');
+    optMin.value=''; optMin.textContent='دقیقه'; optMin.disabled=true; optMin.selected=true;
+    minSel.appendChild(optMin);
+    var m;
+    for (m=0; m<60; m++){
+      var om = document.createElement('option');
+      om.value = m;
+      om.textContent = toPersianDigits(pad2(m));
+      minSel.appendChild(om);
+    }
+
+    hourSel.addEventListener('change', function(){ checkReady(toScreen3, hourSel, minSel); });
+    minSel.addEventListener('change', function(){ checkReady(toScreen3, hourSel, minSel); });
+
+    dateReset.addEventListener('click', function(){
+      selectedJY=null; selectedJM=null; selectedJD=null;
+      dateBtn.textContent = 'انتخاب تاریخ 📅';
+      dateBtn.classList.remove('filled');
+      checkReady(toScreen3, hourSel, minSel);
+    });
+    timeReset.addEventListener('click', function(){
+      hourSel.value=''; minSel.value='';
+      checkReady(toScreen3, hourSel, minSel);
+    });
+
+    var calOverlay = document.getElementById('calOverlay');
+    var calTitle = document.getElementById('calTitle');
+    var calGrid = document.getElementById('calGrid');
+    var calPrev = document.getElementById('calPrev');
+    var calNext = document.getElementById('calNext');
+    var calClose = document.getElementById('calClose');
+
+    var todayG = new Date();
+    var todayJ = toJalali(todayG.getFullYear(), todayG.getMonth()+1, todayG.getDate());
+    todayJY = todayJ[0]; todayJM = todayJ[1]; todayJD = todayJ[2];
+    viewJY = todayJY; viewJM = todayJM;
+
+    dateBtn.addEventListener('click', function(){
+      if (selectedJY) { viewJY = selectedJY; viewJM = selectedJM; }
+      renderCalendar(calTitle, calGrid, dateBtn, calOverlay, toScreen3, hourSel, minSel);
+      calOverlay.classList.add('active');
+    });
+    calClose.addEventListener('click', function(){ calOverlay.classList.remove('active'); });
+    calPrev.addEventListener('click', function(){
+      viewJM--; if (viewJM<1){viewJM=12; viewJY--;}
+      renderCalendar(calTitle, calGrid, dateBtn, calOverlay, toScreen3, hourSel, minSel);
+    });
+    calNext.addEventListener('click', function(){
+      viewJM++; if (viewJM>12){viewJM=1; viewJY++;}
+      renderCalendar(calTitle, calGrid, dateBtn, calOverlay, toScreen3, hourSel, minSel);
+    });
+
+    toScreen3.addEventListener('click', function(){ goTo(3); });
+
+    var placeButtons = document.querySelectorAll('.place');
+    for (var p=0; p<placeButtons.length; p++){
+      placeButtons[p].addEventListener('click', function(){
+        selectedPlace = this.getAttribute('data-place');
+        buildFinal(hourSel, minSel);
+        goTo(4);
+        launchCelebration();
+      });
+    }
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
